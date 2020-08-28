@@ -39,6 +39,11 @@ class User implements UserInterface
     protected array $roles = [];
 
     /**
+     * @ORM\Column(type="string", length=180)
+     */
+    protected string $access;
+
+    /**
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
@@ -98,6 +103,18 @@ class User implements UserInterface
         return $this;
     }
 
+    public function getAccess(): string
+    {
+        return $this->access;
+    }
+
+    public function setAccess(string $access): self
+    {
+        $this->access = $access;
+
+        return $this;
+    }
+
     /**
      * @see UserInterface
      */
@@ -125,7 +142,7 @@ class User implements UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->uuid;
+        return (string) $this->access;
     }
 
     /**

@@ -65,12 +65,12 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "Gesco\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\Tests\\": "tests/"
+            "Gesco\\Tests\\": "tests/"
         }
     },
     "replace": {
