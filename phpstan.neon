@@ -1,0 +1,29 @@
+includes:
+  - %currentWorkingDirectory%/vendor/phpstan/phpstan-symfony/extension.neon
+  - %currentWorkingDirectory%/vendor/phpstan/phpstan-symfony/rules.neon
+
+parameters:
+
+    level: 5
+
+    paths:
+        - %currentWorkingDirectory%/src/
+        - %currentWorkingDirectory%/tests
+
+    excludes_analyse:
+        - %currentWorkingDirectory%/migrations/*
+
+    checkMissingIterableValueType: false
+
+    checkGenericClassInNonGenericObjectType: false
+
+    bootstrapFiles:
+        - %currentWorkingDirectory%/vendor/autoload.php
+
+    symfony:
+        # container_xml_path: %rootDir%/../../../var/cache/dev/srcDevDebugProjectContainer.xml
+        # or with Symfony 4.2+
+        # container_xml_path: '%rootDir%/../../../var/cache/dev/srcApp_KernelDevDebugContainer.xml'
+        # or with Symfony 5+
+        container_xml_path: '%rootDir%/../../../var/cache/dev/App_KernelDevDebugContainer.xml'
+
