@@ -1,0 +1,9 @@
+@import "./tailwind.css";
+
+body {
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    overflow: hidden;
+    font-family: 'Quicksand', sans-serif;
+}
