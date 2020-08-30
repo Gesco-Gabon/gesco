@@ -3,6 +3,7 @@
 namespace Gesco\DataPersister;
 
 use Gesco\Entity\Operator;
+use Gesco\Helper\NationalitiesHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;

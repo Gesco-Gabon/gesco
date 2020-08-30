@@ -26,10 +26,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Operator extends UserBase
 {
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      * @Groups({"operator:read"})
-     * @Assert\NotBlank
-     * @Assert\DateTime
+     * @Assert\DateTime(format="dd-MM-yyyy")
      */
     private \DateTime $birthDate;
 
@@ -37,9 +36,6 @@ class Operator extends UserBase
      * @SerializedName("birthDate")
      * @Groups({"operator:write"})
      * @Assert\NotBlank
-     * @Assert\DateTime
-     *
-     * @var string A "Y-m-d H:i:s" formatted value
      */
     private string $plainBirthDate;
 
