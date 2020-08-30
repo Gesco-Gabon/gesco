@@ -3,99 +3,72 @@
 namespace Gesco\Entity;
 
 use Ramsey\Uuid\Uuid;
+use Gesco\Entity\UserBase;
 use Ramsey\Uuid\UuidInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Gesco\Repository\UserRepository;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
- * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ORm\Entity()
  * @ORM\Table(name="user")
+ * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ApiResource(
+ *      iri="http://schema.org/User",
+ *      normalizationContext={"groups": {"user:read"}},
+ *      denormalizationContext={"groups": {"user:write"}}
+ * )
  */
-class User implements UserInterface
+class User extends UserBase implements UserInterface
 {
     /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     */
-    protected UuidInterface $uuid;
-
-    /**
-     * @ORM\Column(type="string", length=180)
-     */
-    protected string $firstname;
-
-    /**
-     * @ORM\Column(type="string", length=180)
-     */
-    protected string $lastname;
-
-    /**
      * @ORM\Column(type="json")
+     * @Groups({"user:read"})
      */
-    protected array $roles = [];
+    private array $roles = [];
 
     /**
      * @ORM\Column(type="string", length=180)
+     * @Groups({"user:read", "user:write"})
      */
-    protected string $access;
+    private string $access;
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
-    protected string $password;
+    private string $password;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @SerializedName("password")
+     * @Groups({"user:write"})
+     * @Assert\NotBlank
      */
-    protected \DateTimeInterface $createdAt;
+    private ?string $plainPassword;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
-        $this->uuid = Uuid::uuid4();
+        parent::__construct();
+
+        $this->setRoles(["ROLE_USER"]);
     }
 
-    public function getFirstname(): string
-    {
-        return $this->firstname;
-    }
-
-    public function setFirstname(string $firstname): self
-    {
-        $this->firstname = $firstname;
-
-        return $this;
-    }
-
-    public function getLastname(): string
-    {
-        return $this->lastname;
-    }
-
-    public function setLastname(string $lastname): self
-    {
-        $this->lastname = $lastname;
-
-        return $this;
-    }
-
-    /**
-     * @see UserInterface
-     */
     public function getRoles(): array
     {
         return$this->roles;
     }
 
-    public function setRoles(string $role): self
+    public function setRoles(array $role): self
     {
-        if (\in_array($role, $this->roles, true)) {
-            throw new \LogicException(sprintf("User %s have already role `%s`", $this->getUsername(), $role));
+        $role = \array_unique($role);
+
+        if (\in_array($role[0], $this->roles, true)) {
+            throw new \LogicException(sprintf("User %s have already role `%s`", $this->getUsername(), $role[0]));
         }
 
         $this->roles[] = $role;
@@ -115,10 +88,7 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return (string) $this->password;
     }
@@ -130,35 +100,30 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getCreatedAt(): \DateTimeInterface
+    public function getPlainPassword(): ?string
     {
-        return $this->createdAt;
+        return $this->plainPassword;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
+    public function setPlainPassword(string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
     public function getUsername(): string
     {
         return (string) $this->access;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function getSalt()
     {
         return null;
     }
 
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 }

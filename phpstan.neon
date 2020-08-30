@@ -1,10 +1,12 @@
 includes:
   - %currentWorkingDirectory%/vendor/phpstan/phpstan-symfony/extension.neon
   - %currentWorkingDirectory%/vendor/phpstan/phpstan-symfony/rules.neon
+  - %currentWorkingDirectory%/vendor/phpstan/phpstan-doctrine/extension.neon
+  - %currentWorkingDirectory%/vendor/phpstan/phpstan-doctrine/rules.neon
 
 parameters:
 
-    level: 5
+    level: 8
 
     paths:
         - %currentWorkingDirectory%/src/
@@ -25,5 +27,5 @@ parameters:
         # or with Symfony 4.2+
         # container_xml_path: '%rootDir%/../../../var/cache/dev/srcApp_KernelDevDebugContainer.xml'
         # or with Symfony 5+
-        container_xml_path: '%rootDir%/../../../var/cache/dev/App_KernelDevDebugContainer.xml'
+        container_xml_path: '%rootDir%/../../../var/cache/dev/Gesco_KernelDevDebugContainer.xml'
 
