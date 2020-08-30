@@ -13,11 +13,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 /**
  * @ORm\Entity()
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @UniqueEntity(fields={"email"})
  * @ApiResource(
  *      iri="http://schema.org/User",
  *      normalizationContext={"groups": {"user:read"}},
@@ -26,6 +29,15 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  */
 class User extends UserBase implements UserInterface
 {
+
+    /**
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups({"user:read", "user:write"})
+     * @Assert\NotBlank
+     * @Assert\Email()
+     */
+    protected string $email;
+
     /**
      * @ORM\Column(type="json")
      * @Groups({"user:read"})
@@ -33,13 +45,6 @@ class User extends UserBase implements UserInterface
     private array $roles = [];
 
     /**
-     * @ORM\Column(type="string", length=180)
-     * @Groups({"user:read", "user:write"})
-     */
-    private string $access;
-
-    /**
-     * @var string The hashed password
      * @ORM\Column(type="string")
      */
     private string $password;
@@ -58,6 +63,18 @@ class User extends UserBase implements UserInterface
         $this->setRoles(["ROLE_USER"]);
     }
 
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
     public function getRoles(): array
     {
         return$this->roles;
@@ -72,18 +89,6 @@ class User extends UserBase implements UserInterface
         }
 
         $this->roles[] = $role;
-
-        return $this;
-    }
-
-    public function getAccess(): string
-    {
-        return $this->access;
-    }
-
-    public function setAccess(string $access): self
-    {
-        $this->access = $access;
 
         return $this;
     }
@@ -114,7 +119,7 @@ class User extends UserBase implements UserInterface
 
     public function getUsername(): string
     {
-        return (string) $this->access;
+        return (string) $this->email;
     }
 
     public function getSalt()

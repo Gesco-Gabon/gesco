@@ -16,7 +16,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass=OperatorRepository::class)
  * @ORM\Table(name="operator")
  * @UniqueEntity(fields={"identityNumber"})
- * @UniqueEntity(fields={"email"})
  * @ApiResource(
  *      iri="http://schema.org/Operator",
  *      normalizationContext={"groups"={"operator:read"}},
@@ -73,6 +72,9 @@ class Operator extends UserBase
      * @ORM\Column(type="string", length=180)
      * @Groups({"operator:read", "operator:write"})
      * @Assert\NotBlank
+     * @Assert\Choice(
+     *      callback={"Gesco\Helper\IdentityHelper", "getValidIdentities"}
+     * )
      */
     private string $identityDocument;
 

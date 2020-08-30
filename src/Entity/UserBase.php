@@ -40,14 +40,6 @@ class UserBase
     protected string $lastname;
 
     /**
-     * @ORM\Column(type="string", length=180, nullable=true, unique=true)
-     * @Groups({"admin:read", "admin:write", "operator:write", "operator:read"})
-     * @Assert\NotBlank
-     * @Assert\Email()
-     */
-    protected ?string $email;
-
-    /**
      * @ORM\Column(type="string", nullable=false)
      * @Groups({"admin:write", "admin:read", "operator:write", "operator:read"})
      * @Assert\NotBlank()
@@ -91,18 +83,6 @@ class UserBase
     public function setLastname(string $lastname): self
     {
         $this->lastname = $lastname;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
 
         return $this;
     }
