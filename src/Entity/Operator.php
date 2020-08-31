@@ -65,6 +65,9 @@ class Operator extends UserBase
      * @ORM\Column(type="string", length=180)
      * @Groups({"operator:read", "operator:write"})
      * @Assert\NotBlank
+     * @Assert\Choice(
+     *      callback={"Gesco\Helper\ActivityHelper", "getActivities"}
+     * )
      */
     private string $activity;
 
