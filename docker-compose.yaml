@@ -1,0 +1,64 @@
+version: '3.7'
+
+services:
+    php:
+        user: "${UID}:${GID}"
+        container_name: php
+        build:
+          context: ./docker/php
+        volumes:
+          - .:/var/www/gesco:rw,cached
+        depends_on:
+          - db
+
+    nginx:
+        image: nginx:1.19.0
+        container_name: nginx
+        ports:
+            - 8000:80
+        volumes:
+            - .:/var/www/gesco:ro
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+        depends_on:
+            - php
+
+    db:
+        # This image exposes the standard MySQL port (3306)
+        image: mysql:8.0
+        container_name: mysql
+        command: ['mysqld','--character-set-server=utf8','--default-authentication-plugin=mysql_native_password']
+        ports:
+            - 3307:3306
+        volumes:
+            - ./db-data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: gesco
+            MYSQL_DATABASE: gesco
+            MYSQL_USER: gesco
+            MYSQL_PASSWORD: gesco
+        restart: on-failure
+
+    phpmyadmin:
+        container_name: phpmyadmin
+        image: phpmyadmin/phpmyadmin
+        depends_on:
+            - db
+        links:
+            - db
+        # phpmyadmin port defined to 3002
+        ports:
+            - "3308:80"
+        restart: on-failure
+        environment:
+            PMA_HOST: db
+            PMA_USER: gesco
+            PMA_PASSWORD: gesco
+
+
+
+volumes:
+    db-data:
+        driver: local
+    # search-data:
+    #   driver: local
